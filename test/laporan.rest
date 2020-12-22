@@ -1,0 +1,39 @@
+@controller=http://localhost/indihome/laporan
+
+GET {{controller}}/get HTTP/1.1
+Content-Type: application/json
+
+{
+  "awal": "2020-12-01",
+  "akhir": "2020-12-31"
+}
+
+###
+POST {{controller}}/add HTTP/1.1
+Content-Type: application/json
+
+{
+  "kodepelanggan": "001322555",
+  "nama": "Bagus Joko Susilo",
+  "kontak": "0967623321",
+  "alamat": "Aryoko",
+  "email": "bagus@mail.com"
+}
+
+###
+
+PUT {{controller}}/update HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "1",
+  "kodepelanggan": "001321522",
+  "nama": "Deni Malik",
+  "kontak": "0967553124",
+  "alamat": "Perum Pemda II",
+  "email": "deni@mail.com"
+}
+
+###
+
+DELETE {{controller}}/delete/2 HTTP/1.1

@@ -1,0 +1,45 @@
+@controller=http://localhost/indihome/karyawan
+
+GET {{controller}}/get HTTP/1.1
+Content-Type: application/json
+
+###
+POST {{controller}}/add HTTP/1.1
+Content-Type: application/json
+
+{
+	"nip": "5421313",
+  "nama": "Candra Putra Wijaksana",
+  "alamat": "Perumahan Permata Indah Tanah Hitam",
+  "kontak": "0811112132164",
+	"email": "candra@mail.com",
+	"password": "123456",
+	"roles": {
+    "id": "1",
+    "role": "Admin"
+  }
+}
+
+###
+
+PUT {{controller}}/update HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "1",
+  "nip": "321613065456123",
+  "nama": "Candra Putra Wijaksana",
+  "alamat": "Perumahan Permata Indah Tanah Hitam",
+  "kontak": "0811112132164",
+  "email": "candra@mail.com",
+  "userid": "1",
+  "status": "true",
+  "roles": {
+    "id": "1",
+    "role": "Admin"
+  }
+}
+
+###
+
+DELETE {{controller}}/delete/4 HTTP/1.1
