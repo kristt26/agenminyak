@@ -38,6 +38,7 @@
                   <tr>
                     <th>No</th>
                     <th>Tanggal</th>
+                    <th>Nama Pembeli</th>
                     <th>Harga Beli</th>
                     <th>Jumlah</th>
                     <th>Total Bayar</th>
@@ -47,6 +48,7 @@
                   <tr ng-repeat="item in datas.transaksi | orderBy: 'status'">
                     <td>{{$index+1}}</td>
                     <td>{{item.tanggal}}</td>
+                    <td>{{item.nama}}</td>
                     <td>{{datas.pembelian.hargajual | currency}}</td>
                     <td class="text-right">{{item.jumlah | number}} Liter</td>
                     <td class="text-right">{{datas.pembelian.hargajual * item.jumlah | currency}}</td>
