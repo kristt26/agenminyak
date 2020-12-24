@@ -61,7 +61,7 @@ class Pembelian_model extends CI_Model
             $pelanggan = $this->Pelanggan_model->selectActive();
             foreach ($pelanggan as $key => $itemPelanggan) {
                 $pesan = [
-                    'TextDecoded'=>"From: ". $this->session->userdata('namaagen')."\nMinyak tanah telah tersedia, anda dapat melakukan pembalian sekarang",
+                    'TextDecoded'=>"From: ". $this->session->userdata('namaagen')."\nMinyak tanah telah tersedia di Agen Widya, anda dapat melakukan pembalian sekarang \n terima kasih.",
                     'DestinationNumber'=>$itemPelanggan->kontak,
                     'CreatorID'=>$this->session->userdata('id')
                 ];
