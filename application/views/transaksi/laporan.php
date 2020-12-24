@@ -56,7 +56,7 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colspan="3"><strong>Total</strong></td>
+                    <td colspan="4"><strong>Total</strong></td>
                     <td class="text-right"><strong>{{totalTerjual | number}} Liter</strong></td>
                     <td class="text-right"><strong>{{totalPenjualan | currency}}</strong></td>
                   </tr>
