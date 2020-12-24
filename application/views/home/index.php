@@ -3,9 +3,9 @@
     <!-- small box -->
     <div class="small-box bg-info">
       <div class="inner">
-        <h4>{{datass.karyawan.length}}</h4>
+        <h4><?= number_format($totalpelanggan->totalpelanggan,0,",",".") . " Pelanggan"?></h4>
 
-        <p>Total Karyawan Aktif</p>
+        <p>Total Pelanggan</p>
       </div>
       <div class="icon">
         <i class="ion ion-person-add"></i>
@@ -14,14 +14,40 @@
   </div>
   <div class="col-lg-4 col-6">
     <!-- small box -->
-    <div class="small-box bg-danger">
+    <div class="small-box bg-secondary">
       <div class="inner">
-        <h4>{{datass.periode ? datass.periode.periode : 'Periode tidak ditemuka'}}</h4>
+        <h4><?= number_format($totalbeli,0,",",".") . " Liter"?></h4>
 
-        <p>Periode Aktif</p>
+        <p>Total Beli</p>
       </div>
       <div class="icon">
-        <i class="ion ion-android-calendar"></i>
+        <i class="fas fa-oil-can"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-6">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h4><?= number_format($totaljual,0,",",".") . " Liter"?></h4>
+
+        <p>Total Terjual</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-oil-can"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-6">
+    <!-- small box -->
+    <div class="small-box bg-danger">
+      <div class="inner">
+        <h4><?= number_format($stokakhir,0,",",".") . " Liter"?></h4>
+
+        <p>Stok Akhir</p>
+      </div>
+      <div class="icon">
+        <i class="fas fa-oil-can"></i>
       </div>
     </div>
   </div>
@@ -29,12 +55,25 @@
     <!-- small box -->
     <div class="small-box bg-warning">
       <div class="inner">
-        <h4>{{hasilAkhir.hasil==0 ? 'Analisa Belum dilakukan' : hasilAkhir.karyawan}}</h4>
+        <h4><?= "Rp. " . number_format($totalpembelian,2,",",".")?></h4>
 
-        <p>Karyawan Terbaik Periode Aktif</p>
+        <p>Total Pembelian</p>
       </div>
       <div class="icon">
-        <i class="ion ion-clipboard"></i>
+        <i class="ion ion-bag"></i>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4 col-6">
+    <!-- small box -->
+    <div class="small-box bg-success">
+      <div class="inner">
+        <h4><?= "Rp. " . number_format($totalpenjualan,2,",",".")?></h4>
+
+        <p>Total Penjualan</p>
+      </div>
+      <div class="icon">
+        <i class="ion ion-cash"></i>
       </div>
     </div>
   </div>

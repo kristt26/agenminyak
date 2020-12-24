@@ -3,10 +3,12 @@ angular.module('apps', [
     'helper.service',
     'auth.service',
     'services',
-    'datatables'
+    'datatables',
+    'ngLocale',
+    'ui.utils.masks'
 ])
     .controller('indexController', function ($scope) {
-        $scope.titleHeader = "SPK SAW";
+        $scope.titleHeader = "Agen Minyak Tanah";
         $scope.header = "";
         $scope.breadcrumb = "";
 
@@ -15,4 +17,5 @@ angular.module('apps', [
             $scope.header = data.header;
             $scope.breadcrumb = data.breadcrumb;
         });
+        $.LoadingOverlay("show");
     });

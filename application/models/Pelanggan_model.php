@@ -13,6 +13,12 @@ class Pelanggan_model extends CI_Model
             return $this->db->get_where('pelanggan', ['id' => $id])->row_array();
         }
     }
+
+    public function selectActive()
+    {
+        return $this->db->get_where('pelanggan', ['status' => 'Aktif'])->result();
+    }
+
     public function insert($data)
     {
         $result = $this->db->insert('pelanggan', $data);
@@ -27,11 +33,10 @@ class Pelanggan_model extends CI_Model
     public function update($data)
     {
         $item = [
-            'kodepelanggan' => $data['kodepelanggan'],
             'nama' => $data['nama'],
             'kontak' => $data['kontak'],
             'alamat' => $data['alamat'],
-            'email' => $data['email'],
+            'status' => $data['status'],
         ];
         $this->db->where('id', $data['id']);
         $this->db->update('pelanggan', $item);

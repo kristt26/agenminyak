@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>SPK SAW | Log in</title>
+  <title>Agen Minyak Tanah | Log in</title>
   <link rel="icon" href="<?=base_url('favicon.ico')?>">
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -22,11 +22,11 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <img src="<?=base_url()?>public/img/btn.png" width="75%" alt=""><br><br>
-    <h4>SPK Pemilihan Karyawan Terbaik</h4>
+    <!-- <img src="<?=base_url()?>public/img/btn.png" width="75%" alt=""><br><br> -->
+    <h4>Sistem Informasi Agen Minyak Tanah Berbasis SMS Gareway</h4> <br>
   </div>
   <!-- /.login-logo -->
-  <div class="card">
+  <div class="card card-warning">
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
       <?php
@@ -57,7 +57,7 @@
         </div>
         <div class="row">
           <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            <button type="submit" class="btn btn-primary btn-sm btn-block">Sign In</button>
           </div>
           <!-- /.col -->
         </div>

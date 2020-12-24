@@ -1,17 +1,15 @@
 angular.module('adminctrl', [])
     .controller('homeController', homeController)
     .controller('loginController', loginController)
-    .controller('profileController', profileController)
-    .controller('karyawanController', karyawanController)
     .controller('pelangganController', pelangganController)
-    .controller('permintaanController', permintaanController)
-    .controller('prosesPermintaanController', prosesPermintaanController)
     .controller('laporanController', laporanController)
-    .controller('periodeController', periodeController)
-    .controller('kriteriaController', kriteriaController)
-    .controller('penilaianController', penilaianController)
+    .controller('pembelianController', pembelianController)
+    .controller('transaksiController', transaksiController)
+    .controller('laporanPembelianController', laporanPembelianController)
+    .controller('laporanPenjualanController', laporanPenjualanController)
+    .controller('pesanController', pesanController)
     ;
-function homeController($scope, HomeServices, PenilaianServices, KriteriaServices, AnalisaServices) {
+function homeController($scope, HomeServices) {
     $scope.itemHeader = { title: "Home", breadcrumb: "Home", header: "Home" };
     $scope.$emit("SendUp", $scope.itemHeader);
     $scope.datas = [];
@@ -22,58 +20,7 @@ function homeController($scope, HomeServices, PenilaianServices, KriteriaService
     $scope.hasilAkhir.hasil = 0;
     $scope.periode = {};
     $scope.setValue;
-    PenilaianServices.get().then(x => {
-        x.forEach(element => {
-            element.kriteria.forEach(kriteria => {
-                if (kriteria.penilaian) {
-                    kriteria.nilai = kriteria.subkriteria.find(x => x.id == kriteria.penilaian.subkriteriaid);
-                }
-            });
-        });
-        $scope.datas = x;
-        HomeServices.get().then(x => {
-            $scope.datass = x;
-            $scope.analisa();
-            $.LoadingOverlay("hide");
-        })
-    })
-    $scope.analisa = () => {
-        var data = {};
-            data.alternatif = [];
-            data.kriterias = [];
-            KriteriaServices.get().then(kriterias => {
-                data.kriterias = kriterias
-                data.kriterias.map(function (x, key) {
-                    x.kode = "C" + (key + 1);
-                })
-                $scope.datas.forEach((karyawan, value) => {
-                    var itemKaryawan = {};
-                    itemKaryawan.karyawan = karyawan.nama;
-                    itemKaryawan.kode = "A" + (value + 1);
-                    itemKaryawan.kriteria = []
-                    // console.log(karyawan.nama);
-                    karyawan.kriteria.forEach(function (kriteria, key) {
-                        var itemKritria = { kode: 'C' + (key + 1), nilai: parseFloat(kriteria.penilaian.nilai) };
-                        itemKaryawan.kriteria.push(angular.copy(itemKritria));
-                    });
-                    data.alternatif.push(angular.copy(itemKaryawan));
-                });
-                $scope.setValue = AnalisaServices.analisa(data);
-                $scope.setValue.alternatif.forEach((itemNormal, value) => {
-                    itemNormal.hasil = $scope.setValue.bobotPreferensi[value];
-                    $scope.hasilAkhir
-                    itemNormal.kriteria.forEach((itemKriteria, valueItem) => {
-                        itemKriteria.nilaiNormal = $scope.setValue.normalMatriks[valueItem][value];
-                    });
-
-                    if ($scope.hasilAkhir.hasil < itemNormal.hasil) {
-                        $scope.hasilAkhir = itemNormal;
-                    }
-                });
-            })
-        // console.log(data);
-    }
-    
+    $.LoadingOverlay("hide");
     
 }
 function loginController($scope, AuthService, helperServices) {
@@ -85,63 +32,11 @@ function loginController($scope, AuthService, helperServices) {
     })
 
 }
-function profileController($scope) {
-    $scope.title = "Profile Header";
-    $.LoadingOverlay("hide");
-}
-
-function karyawanController($scope, helperServices, PetugasServices) {
-    $scope.itemHeader = { title: "Petugas", breadcrumb: "Petugas", header: "Petugas" };
-    $scope.sexs = helperServices.sex;
-    $scope.status = helperServices.status;
-    $scope.$emit("SendUp", $scope.itemHeader);
-    $scope.datas = [];
-    $scope.model = {};
-    $scope.simpan = true;
-    PetugasServices.get().then(x => {
-        $scope.datas = x;
-        $.LoadingOverlay("hide");
-    })
-    $scope.edit = (item) => {
-        $scope.model = angular.copy(item);
-        $scope.simpan = false;
-    }
-    $scope.clear = () => {
-        $scope.simpan = true;
-        $scope.model = {};
-    }
-    $scope.save = () => {
-        $.LoadingOverlay("show");
-        if ($scope.model.id) {
-            PetugasServices.put($scope.model).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $scope.simpan = true;
-                $.LoadingOverlay("hide");
-            })
-        } else {
-            $scope.model.roles = helperServices.roles;
-            PetugasServices.post($scope.model).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-            })
-        }
-    }
-}
-
 function pelangganController($scope, helperServices, PelangganServices) {
     $scope.itemHeader = { title: "Pelanggan", breadcrumb: "Pelanggan", header: "Pelanggan" };
     $scope.$emit("SendUp", $scope.itemHeader);
     $scope.datas = [];
+    $scope.status = helperServices.status
     $scope.model = {};
     $scope.simpan = true;
     PelangganServices.get().then(x => {
@@ -154,7 +49,6 @@ function pelangganController($scope, helperServices, PelangganServices) {
     }
     $scope.save = () => {
         $.LoadingOverlay("show");
-        // $scope.model.roles = helperServices.roles;
         if ($scope.model.id) {
             PelangganServices.put($scope.model).then(result => {
                 Swal.fire({
@@ -178,94 +72,7 @@ function pelangganController($scope, helperServices, PelangganServices) {
         }
     }
 }
-function permintaanController($scope, helperServices, PermintaanServices, PelangganServices) {
-    $scope.itemHeader = { title: "Permohonan", breadcrumb: "Permohonan", header: "Permohonan" };
-    $scope.distriks = helperServices.distrik;
-    $scope.$emit("SendUp", $scope.itemHeader);
-    $scope.datas = [];
-    $scope.pelanggans = [];
-    $scope.model = {};
-    $scope.items = helperServices;
-    $scope.model.noregister = $scope.items.randid();
-    $scope.simpan = true;
-    PermintaanServices.get().then(x => {
-        $scope.datas = x;
-        PelangganServices.get().then(pelanggan => {
-            $scope.pelanggans = pelanggan;
-            $.LoadingOverlay("hide");
-        })
-    })
-    $scope.edit = (item) => {
-        $scope.model = angular.copy(item);
-        $scope.simpan = false;
-    }
-    $scope.save = () => {
-        $.LoadingOverlay("show");
-        if ($scope.model.id) {
-            PermintaanServices.put($scope.model).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-            })
-        } else {
-            $scope.model.karyawan = null;
-            $scope.model.karyawanid = null;
-            PermintaanServices.post($scope.model).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-            })
-        }
-    }
-    $scope.detail = (item) => {
-        if (item.status == 'Proses' || item.status == 'Pending')
-            location.href = helperServices.url + "/csr/proses/index/" + item.id;
-    }
-
-}
-function prosesPermintaanController($scope, helperServices, PermintaanServices) {
-    $scope.itemHeader = { title: "Proses Permohonan", breadcrumb: "Proses Permohonan", header: "Proses Permohonan" };
-    $scope.$emit("SendUp", $scope.itemHeader);
-    $scope.model = {};
-    PermintaanServices.getDetail().then(x => {
-        $scope.model = x;
-        $.LoadingOverlay("hide");
-    })
-    $scope.save = () => {
-        $.LoadingOverlay("show");
-        PermintaanServices.proses($scope.model).then(x => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Proses Berhasil'
-            })
-            location.href = helperServices.url + "/csr/permintaan";
-        })
-    }
-    $scope.message = () => {
-        $('#pesan').modal('show');
-    }
-    $scope.pending = () => {
-        $.LoadingOverlay("show");
-        PermintaanServices.pending($scope.model).then(x => {
-            Swal.fire({
-                icon: 'success',
-                title: 'Success',
-                text: 'Proses Berhasil'
-            })
-            location.href = helperServices.url + "/csr/permintaan";
-        })
-    }
-}
-function laporanController($scope, helperServices, PenilaianServices, KriteriaServices, AnalisaServices, PeriodeServices) {
+function laporanController($scope, helperServices, LaporanServices) {
     $scope.itemHeader = { title: "Laporan", breadcrumb: "Laporan", header: "Laporan" };
     $scope.$emit("SendUp", $scope.itemHeader);
     $scope.model = {};
@@ -280,77 +87,52 @@ function laporanController($scope, helperServices, PenilaianServices, KriteriaSe
         $scope.periodes = itemperiode
         $.LoadingOverlay("hide");
     })
-    $scope.showReport = (item) => {
+
+    $scope.tampil = (item) => {
         $.LoadingOverlay("show");
-        PenilaianServices.getByPeriode(item.id).then(x => {
-            x.forEach(element => {
-                element.kriteria.forEach(kriteria => {
-                    if (kriteria.penilaian) {
-                        kriteria.nilai = kriteria.subkriteria.find(x => x.id == kriteria.penilaian.subkriteriaid);
-                    }
-                });
-            });
-            $scope.datas = x;
-            var data = {};
-            data.alternatif = [];
-            data.kriterias = [];
-            KriteriaServices.get().then(kriterias => {
-                data.kriterias = kriterias
-                data.kriterias.map(function (x, key) {
-                    x.kode = "C" + (key + 1);
-                });
-                $scope.datas.forEach((karyawan, value) => {
-                    var itemKaryawan = {};
-                    itemKaryawan.karyawan = karyawan.nama;
-                    itemKaryawan.kode = "A" + (value + 1);
-                    itemKaryawan.kriteria = [];
-                    // console.log(karyawan.nama);
-                    karyawan.kriteria.forEach(function (kriteria, key) {
-                        var itemKritria = { kode: 'C' + (key + 1), nilai: parseFloat(kriteria.penilaian.nilai) };
-                        itemKaryawan.kriteria.push(angular.copy(itemKritria));
-                    });
-                    data.alternatif.push(angular.copy(itemKaryawan));
-                });
-                $scope.setValue = AnalisaServices.analisa(data);
-                $scope.setValue.alternatif.forEach((itemNormal, value) => {
-                    itemNormal.hasil = $scope.setValue.bobotPreferensi[value];
-                    $scope.hasilAkhir
-                    itemNormal.kriteria.forEach((itemKriteria, valueItem) => {
-                        itemKriteria.nilaiNormal = $scope.setValue.normalMatriks[valueItem][value];
-                    });
-
-                    if ($scope.hasilAkhir.hasil < itemNormal.hasil) {
-                        $scope.hasilAkhir = itemNormal;
-                    }
-                });
-                console.log($scope.hasilAkhir);
-                $scope.laporan = true;
+        var a = item.split(' - ');
+        if(a[0]!==a[1]){
+            $scope.model.awal = a[0];
+            $scope.model.akhir = a[1];
+            LaporanServices.get($scope.model).then(x=>{
+                $scope.datas = x;
                 $.LoadingOverlay("hide");
-                console.log($scope.setValue);
             })
-        })
-
+        }
+        $.LoadingOverlay("hide");
     }
-    $scope.getData = (id) => {
 
-    }
     $scope.print = () => {
         $("#print").printArea();
     }
 }
-function periodeController($scope, helperServices, PeriodeServices) {
-    $scope.itemHeader = { title: "Periode", breadcrumb: "Periode", header: "Periode" };
+function pembelianController($scope, helperServices, PembelianServices) {
+    $scope.itemHeader = { title: "Pembelian", breadcrumb: "Pembelian", header: "Pembelian" };
     $scope.sexs = helperServices.sex;
     $scope.$emit("SendUp", $scope.itemHeader);
     $scope.datas = [];
     $scope.model = {};
     $scope.simpan = true;
-    PeriodeServices.get().then(x => {
+    $scope.totalStokSisa = 0;
+    PembelianServices.get().then(x => {
         $scope.datas = x;
+        $scope.setStok($scope.datas);
         $.LoadingOverlay("hide");
     })
+    $scope.setStok = (item)=>{
+        $scope.totalStokSisa = 0;
+        item.forEach(element => {
+            if(element.totaltransaksi){
+                $scope.totalStokSisa += parseFloat(element.stok) - parseFloat(element.totaltransaksi);
+            }else{
+                $scope.totalStokSisa += parseFloat(element.stok);
+            }
+        });
+        // return $scope.totalStokSisa;
+    }
     $scope.edit = (item) => {
         $scope.model = angular.copy(item);
+        $scope.model.tanggal = new Date($scope.model.tanggal);
         $scope.simpan = false;
     }
     $scope.clear = () => {
@@ -359,9 +141,10 @@ function periodeController($scope, helperServices, PeriodeServices) {
     }
     $scope.save = (item) => {
         $.LoadingOverlay("show");
-        if (item.id) {
-            item.status = item.setstatus ? "Aktif" : "Tidak Aktif";
-            PeriodeServices.put(item).then(result => {
+        var dataItem = angular.copy(item)
+        $scope.stringDate(dataItem)
+        if (dataItem.id) {
+            PembelianServices.put(dataItem).then(result => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -369,214 +152,71 @@ function periodeController($scope, helperServices, PeriodeServices) {
                 })
                 $scope.model = {};
                 $scope.simpan = true;
+                $scope.setStok($scope.datas);
                 $.LoadingOverlay("hide");
             })
         } else {
-            item.status = "Aktif";
-            PeriodeServices.post(item).then(result => {
+            PembelianServices.post(dataItem).then(result => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: 'Proses Berhasil'
                 })
                 $scope.model = {};
+                $scope.setStok($scope.datas);
                 $.LoadingOverlay("hide");
             })
         }
     }
+    $scope.stringDate = (item)=>{
+        item.tanggal = item.tanggal.getFullYear() + "-" + (item.tanggal.getMonth() + 1) + "-" + (item.tanggal.getDate().length==1 ? "0"+item.tanggal.getDate(): item.tanggal.getDate());
+    }
 }
-function kriteriaController($scope, helperServices, KriteriaServices) {
-    $scope.itemHeader = { title: "Kriteria", breadcrumb: "Kriteria", header: "Kriteria" };
-    $scope.kategorikriteria = helperServices.kategorikriteria;
+function transaksiController($scope, helperServices, TransaksiServices) {
+    $scope.itemHeader = { title: "Transaksi Penjualan", breadcrumb: "Transaksi Penjualan", header: "Transaksi Penjualan" };
     $scope.$emit("SendUp", $scope.itemHeader);
     $scope.datas = [];
+    $scope.status = helperServices.status
     $scope.model = {};
+    $scope.model.totalharga = 0;
+    $scope.model.kembalian = 0;
     $scope.simpan = true;
-    $scope.titlesub = "Sub Kriteria";
-    KriteriaServices.get().then(x => {
+    TransaksiServices.get().then(x => {
         $scope.datas = x;
+        $scope.setDate();
         $.LoadingOverlay("hide");
     })
-    $scope.edit = (item) => {
-        $scope.model = angular.copy(item);
-        $scope.model.bobot = parseInt($scope.model.bobot);
-        $scope.simpan = false;
-
+    $scope.setDate = ()=>{
+        var a = new Date();
+        $scope.model.tanggal = a.getFullYear() + "-" + (a.getMonth() + 1) + "-" + (a.getDate().length==1 ? "0"+a.getDate(): a.getDate());
     }
-    $scope.addsub = (item) => {
-        $scope.model.kriteriaid = item.id;
-        $scope.titlesub = "Tambah " + item.kriteria + " " + item.kriteria;
-        $("#subkriteria").modal('show');
-    }
-    $scope.editsub = (item) => {
-        $scope.model = angular.copy(item);
-        $scope.model.nilai = parseInt($scope.model.nilai);
-        $scope.titlesub = "Ubah " + $scope.titlesub;
-        // $scope.titlesub = item.kriteria;
-        $("#subkriteria").modal('show');
-    }
-    $scope.clear = () => {
-        $scope.simpan = true;
-        $scope.model = {};
-    }
-    $scope.save = (item) => {
-        $.LoadingOverlay("show");
-        if (item.id) {
-            KriteriaServices.put(item).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $scope.simpan = true;
-                $.LoadingOverlay("hide");
-            })
-        } else {
-            KriteriaServices.post(item).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-            })
-        }
-    }
-    $scope.savesub = (item) => {
-        if (item.id) {
-            KriteriaServices.putsub(item).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-                $("#subkriteria").modal('hide');
-            })
-        } else {
-            KriteriaServices.postsub(item).then(result => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
-                    text: 'Proses Berhasil'
-                })
-                $scope.model = {};
-                $.LoadingOverlay("hide");
-                $("#subkriteria").modal('hide');
-            })
-        }
-
-    }
-    $scope.close = () => {
-        $scope.model = {};
-        $scope.titlesub = 'Sub Kriteria';
-        $('#subkriteria').modal('hide');
-        $("#subkriteria").modal('hide');
-    }
-}
-function penilaianController($scope, helperServices, PenilaianServices, KriteriaServices, AnalisaServices, PeriodeServices) {
-    $scope.itemHeader = { title: "Penilaian", breadcrumb: "Penilaian", header: "Penilaian" };
-    $scope.sexs = helperServices.sex;
-    $scope.status = helperServices.status;
-    $scope.$emit("SendUp", $scope.itemHeader);
-    $scope.datas = [];
-    $scope.model = {};
-    $scope.simpan = true;
-    $scope.hasilAkhir = {};
-    $scope.hasilAkhir.hasil = 0;
-    $scope.periode = {};
-    $scope.setValue;
-    PenilaianServices.get().then(x => {
-        if (x !== "null") {
-            x.forEach(element => {
-                element.kriteria.forEach(kriteria => {
-                    if (kriteria.penilaian) {
-                        kriteria.nilai = kriteria.subkriteria.find(x => x.id == kriteria.penilaian.subkriteriaid);
-                    }
-                });
-            });
-            $scope.datas = x;
-            PeriodeServices.periodeActive().then(itemperiode => {
-                $scope.periode = itemperiode
-                $.LoadingOverlay("hide");
-            })
-        } else {
-            $.LoadingOverlay("hide");
+    $scope.hitung = ()=>{
+        if(($scope.datas.pembelian.stok - $scope.datas.pembelian.totaltransaksi) - $scope.model.jumlah < 0){
+            $scope.model.jumlah = $scope.datas.pembelian.stok - $scope.datas.pembelian.totaltransaksi;
             Swal.fire({
-                title: 'Information',
-                text: "Periode aktif tidak ditemukan!!!",
                 icon: 'info',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK'
-            }).then((result) => {
-                if (result.value) {
-                    document.location.href = helperServices.url + "/periode";
-                }
+                title: 'Information',
+                text: 'Jumlah liter yang anda masukkan melebihi Stok minyak yang tersedia'
             })
+            $scope.hitung();
+        }else{
+            $scope.model.totalharga = $scope.model.jumlah ? parseFloat($scope.model.jumlah) * parseFloat($scope.datas.pembelian.hargajual) : 0;
+            $scope.model.kembalian = $scope.model.totalharga !==0 && ($scope.model.totalbayar) ? parseFloat($scope.model.totalbayar) - parseFloat($scope.model.totalharga) : 0;
         }
-    })
-    $scope.analisa = () => {
-        $.LoadingOverlay("show");
-        if ($scope.setValue) {
-            $("#analisa").modal("show");
-            $.LoadingOverlay("hide");
-        } else {
-
-            var data = {};
-            data.alternatif = [];
-            data.kriterias = [];
-            KriteriaServices.get().then(kriterias => {
-                data.kriterias = kriterias
-                data.kriterias.map(function (x, key) {
-                    x.kode = "C" + (key + 1);
-                })
-                $scope.datas.forEach((karyawan, value) => {
-                    var itemKaryawan = {};
-                    itemKaryawan.karyawan = karyawan.nama;
-                    itemKaryawan.kode = "A" + (value + 1);
-                    itemKaryawan.kriteria = []
-                    // console.log(karyawan.nama);
-                    karyawan.kriteria.forEach(function (kriteria, key) {
-                        var itemKritria = { kode: 'C' + (key + 1), nilai: parseFloat(kriteria.penilaian.nilai) };
-                        itemKaryawan.kriteria.push(angular.copy(itemKritria));
-                    });
-                    data.alternatif.push(angular.copy(itemKaryawan));
-                });
-                $scope.setValue = AnalisaServices.analisa(data);
-                $scope.setValue.alternatif.forEach((itemNormal, value) => {
-                    itemNormal.hasil = $scope.setValue.bobotPreferensi[value];
-                    $scope.hasilAkhir
-                    itemNormal.kriteria.forEach((itemKriteria, valueItem) => {
-                        itemKriteria.nilaiNormal = $scope.setValue.normalMatriks[valueItem][value];
-                    });
-
-                    if ($scope.hasilAkhir.hasil < itemNormal.hasil) {
-                        $scope.hasilAkhir = itemNormal;
-                    }
-                });
-                console.log($scope.hasilAkhir);
-                $("#analisa").modal("show");
-                $.LoadingOverlay("hide");
-                console.log($scope.setValue);
-            })
-        }
-        // console.log(data);
+        
     }
     $scope.edit = (item) => {
         $scope.model = angular.copy(item);
+        $scope.model.pelanggan = $scope.datas.pelanggan.find(x=>x.id==item.pelangganid);
+        $scope.model.jumlah = parseFloat(item.jumlah);
+        $scope.hitung();
         $scope.simpan = false;
-    }
-    $scope.clear = () => {
-        $scope.simpan = true;
-        $scope.model = {};
     }
     $scope.save = () => {
         $.LoadingOverlay("show");
+        $scope.model.stokid = $scope.datas.pembelian.id
         if ($scope.model.id) {
-            PenilaianServices.put($scope.datas).then(result => {
+            TransaksiServices.put($scope.model).then(result => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
@@ -584,18 +224,140 @@ function penilaianController($scope, helperServices, PenilaianServices, Kriteria
                 })
                 $scope.model = {};
                 $scope.simpan = true;
+                $scope.setDate();
                 $.LoadingOverlay("hide");
             })
         } else {
-            PenilaianServices.post($scope.datas).then(result => {
+            TransaksiServices.post($scope.model).then(result => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Success',
                     text: 'Proses Berhasil'
                 })
                 $scope.model = {};
+                $scope.setDate();
                 $.LoadingOverlay("hide");
             })
         }
     }
+    $scope.clear = ()=>{
+        $scope.model={}
+        $scope.setDate();
+        $scope.simpan = true;
+    }
+}
+function laporanPembelianController($scope, helperServices, PembelianServices) {
+    $scope.itemHeader = { title: "Laporan Pembelian", breadcrumb: "Laporan Pembelian", header: "Laporan Pembelian" };
+    $scope.sexs = helperServices.sex;
+    $scope.$emit("SendUp", $scope.itemHeader);
+    $scope.datas = [];
+    $scope.model = {};
+    $scope.a = [];
+    $.LoadingOverlay("hide");
+    $scope.totalStokSisa = 0;
+    $scope.totalStok = 0;
+    $scope.totalTerjual = 0;
+    // PembelianServices.get().then(x => {
+    //     $scope.datas = x;
+    //     $scope.setStok($scope.datas);
+    //     $.LoadingOverlay("hide");
+    // })
+    $scope.tampil = (item) => {
+        $.LoadingOverlay("show");
+        var a = item.split(' - ');
+        $scope.model.awal = a[0];
+        $scope.model.akhir = a[1];
+        PembelianServices.getLaporan($scope.model).then(x=>{
+            $scope.datas = x;
+            $scope.setStok($scope.datas);
+            $.LoadingOverlay("hide");
+        })
+        // if(a[0]!==a[1]){
+        // }else{
+        //     $.LoadingOverlay("hide");
+        // }
+    }
+    $scope.setStok = (item)=>{
+        $scope.totalStokSisa = 0;
+        item.forEach(element => {
+            if(element.totaltransaksi){
+                $scope.totalStokSisa += parseFloat(element.stok) - parseFloat(element.totaltransaksi);
+            }else{
+                $scope.totalStokSisa += parseFloat(element.stok);
+            }
+            $scope.totalStok += parseFloat(element.stok);
+            element.stok = parseFloat(element.stok);
+            element.totaltransaksi = element.totaltransaksi == null ? 0 : element.totaltransaksi;
+            $scope.totalTerjual += element.totaltransaksi;
+        });
+        // return $scope.totalStokSisa;
+    }
+    $scope.print = () => {
+        // var OPTION = {mode:"popup", popHt: 500, popWd: 400,popX: 500,popY: 600, popClose: true, strict: undefined};
+        $("#print").printArea();
+    }
+
+}
+function laporanPenjualanController($scope, helperServices, TransaksiServices) {
+    $scope.itemHeader = { title: "Laporan Penjualan", breadcrumb: "Laporan Penjualan", header: "Laporan Penjualan" };
+    $scope.sexs = helperServices.sex;
+    $scope.$emit("SendUp", $scope.itemHeader);
+    $scope.datas = [];
+    $scope.model = {};
+    $scope.a = [];
+    $.LoadingOverlay("hide");
+    $scope.totalTerjual = 0;
+    $scope.totalPenjualan = 0;
+    // PembelianServices.get().then(x => {
+    //     $scope.datas = x;
+    //     $scope.setStok($scope.datas);
+    //     $.LoadingOverlay("hide");
+    // })
+    $scope.tampil = (item) => {
+        $.LoadingOverlay("show");
+        var a = item.split(' - ');
+        $scope.model.awal = a[0];
+        $scope.model.akhir = a[1];
+        TransaksiServices.getLaporan($scope.model).then(x=>{
+            $scope.datas = x;
+            $scope.setStok($scope.datas.transaksi);
+            $.LoadingOverlay("hide");
+        })
+        // if(a[0]!==a[1]){
+        // }else{
+        //     $.LoadingOverlay("hide");
+        // }
+    }
+    $scope.setStok = (item)=>{
+        $scope.totalTerjual = 0;
+        $scope.totalPenjualan = 0;
+        $scope.datas.pembelian.hargajual = parseFloat($scope.datas.pembelian.hargajual);
+        item.forEach(element => {
+            element.jumlah= parseFloat(element.jumlah);
+            $scope.totalTerjual += element.jumlah;
+            $scope.totalPenjualan += element.jumlah * $scope.datas.pembelian.hargajual;
+        });
+        // return $scope.totalStokSisa;
+    }
+    $scope.print = () => {
+        // var OPTION = {mode:"popup", popHt: 500, popWd: 400,popX: 500,popY: 600, popClose: true, strict: undefined};
+        $("#print").printArea();
+    }
+
+}
+function pesanController($scope, helperServices, PesanServices) {
+    $scope.itemHeader = { title: "Pesan Broadcast", breadcrumb: "Pesan Broadcast", header: "Pesan Broadcast" };
+    $scope.sexs = helperServices.sex;
+    $scope.$emit("SendUp", $scope.itemHeader);
+    $scope.datas = [];
+    $scope.model = {};
+    $scope.a = [];
+    $scope.totalTerjual = 0;
+    $scope.totalPenjualan = 0;
+    PesanServices.get().then(x => {
+        if(x !== "null"){
+            $scope.datas = x;
+        }
+        $.LoadingOverlay("hide");
+    })
 }
