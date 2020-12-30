@@ -63,7 +63,7 @@ class Pembelian_model extends CI_Model
                 $pesan = [
                     'TextDecoded'=>"From: ". $this->session->userdata('namaagen')."\nMinyak tanah telah tersedia di Agen Widya, anda dapat melakukan pembelian sekarang \n terima kasih.",
                     'DestinationNumber'=>$itemPelanggan->kontak,
-                    'CreatorID'=>$this->session->userdata('id')
+                    'CreatorID'=>$itemPelanggan->id
                 ];
                 $db2->insert('outbox', $pesan);
             }
