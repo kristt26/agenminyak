@@ -6,7 +6,7 @@
           </div> -->
     <div class="info">
       <a href="#" class="d-block">
-        <?= $this->session->userdata('namaagen');?>
+        <?=$this->session->userdata('namaagen');?>
       </a>
       <h5 style="color: white">Admin</h5>
     </div>
@@ -57,20 +57,20 @@
         </ul>
       </li>
       <li class="nav-item">
-        <a href="<?=base_url('transaksi')?>"
-          ng-class="{'nav-link active': header=='Transaksi Penjualan', 'nav-link': header!='Transaksi Penjualan'}">
-          <i class="nav-icon fas fa-money-check-alt"></i>
-          <p>
-            Transaksi Pembelian
-          </p>
-        </a>
-      </li>
-      <li class="nav-item">
         <a href="<?=base_url('pesan')?>"
           ng-class="{'nav-link active': header=='Pesan Broadcast', 'nav-link': header!='Pesan Broadcast'}">
           <i class="nav-icon fas fa-sms"></i>
           <p>
             Pesan Broadcast
+          </p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="<?=base_url('transaksi')?>"
+          ng-class="{'nav-link active': header=='Transaksi Penjualan', 'nav-link': header!='Transaksi Penjualan'}">
+          <i class="nav-icon fas fa-money-check-alt"></i>
+          <p>
+            Transaksi Pembelian
           </p>
         </a>
       </li>
