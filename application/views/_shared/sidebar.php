@@ -70,7 +70,7 @@
           ng-class="{'nav-link active': header=='Transaksi Penjualan', 'nav-link': header!='Transaksi Penjualan'}">
           <i class="nav-icon fas fa-money-check-alt"></i>
           <p>
-            Transaksi Pembelian
+            Transaksi Penjualan
           </p>
         </a>
       </li>
