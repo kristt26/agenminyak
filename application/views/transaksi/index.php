@@ -60,7 +60,7 @@
             </div>
           </div>
           <div class="form-group row" ng-show = "simpan">
-            <label for="TotalBayar" class="col-sm-3 col-form-label col-form-label-sm">Total Bayar </label>
+            <label for="TotalBayar" class="col-sm-3 col-form-label col-form-label-sm">Jumlah Bayar </label>
             <label for="hargasatuan" class="col-sm-1 col-form-label col-form-label-sm text-right">: </label>
             <div class="col-sm-8">
               <div class="input-group input-group-sm">
@@ -69,7 +69,7 @@
                   </div>
                   <input type="text" class="form-control form-control-sm" id="TotalBayar" ng-model="model.totalbayar" ui-number-mask="0" ng-change="hitung()" required>
               </div>
-              
+
             </div>
           </div>
           <div class="form-group row" ng-show = "simpan">
@@ -82,7 +82,7 @@
                   </div>
                   <input type="text" readonly class="form-control form-control-sm" id="kembalian" ng-model="model.kembalian" ui-number-mask="2">
               </div>
-              
+
             </div>
           </div>
           <div class="form-group d-flex justify-content-end">
